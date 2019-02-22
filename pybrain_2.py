@@ -35,9 +35,11 @@ base = SupervisedDataSet(25,1)
 dados = pd.read_csv('lotofacil.csv',sep=';')
 
 dados_treinamento = dados.iloc[:1200,0:25]
+dados_treinamento = dados_treinamento /25
 previsores_treinamento = dados.iloc[:1200,25:]
 
 dados_validacao = dados.iloc[1201:,0:25]
+dados_validacao = dados_validacao /25
 previsores_validacao = dados.iloc[1201:,25:]
 
 base.setField('input',dados_treinamento)
@@ -46,7 +48,7 @@ base.setField('target',previsores_treinamento)
 print(base['input'])
 print(base['target'])
 
-treinamento = BackpropTrainer(rede,dataset=base,learningrate=0.05,momentum=0.03)
+treinamento = BackpropTrainer(rede,dataset=base,learningrate=0.02,momentum=0.06)
 
 for i in range(1,1000):
     erro = treinamento.train()
@@ -54,13 +56,15 @@ for i in range(1,1000):
     if i % 1000 == 0:
         print('a')
         
-nao_sorteados = dados[dados['ST']==0] 
-nao_sorteados = nao_sorteados.iloc[:,0:25]    
+nao_sorteados = dados_validacao[dados['ST']==0] 
+nao_sorteados = nao_sorteados.iloc[:,0:25]  
+nao_sorteados = nao_sorteados /25  
 nao_sorteados = np.array(nao_sorteados)
 
 
-sorteados = dados[dados['ST'] > 0] 
-sorteados = dados.iloc[:,0:25]  
+sorteados = dados_validacao[dados['ST'] > 0] 
+sorteados = dados.iloc[:,0:25] 
+sorteados = sorteados /25 
 sorteados = np.array(sorteados)  
 
 for ns in sorteados:
